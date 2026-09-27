@@ -295,7 +295,7 @@
     <div class="card" id="p01">
       <div class="card-media">
         <div class="placeholder">
-          <img src="FrameDiff.png" alt="FrameDiff preview (from the FreeFrame 1.0 version — same algorithm, GPU-ported here)">
+          <img src="FrameDiff.png" alt="FrameDiff preview">
         </div>
         <div class="placeholder">
           <video src="FrameDiff.mp4" controls loop muted playsinline></video>
@@ -305,13 +305,10 @@
         <div class="card-number">Effect</div>
         <div class="card-title">FrameDiff</div>
         <p class="card-desc">
-          FFGL port of the FreeFrame 1.0 FrameDiff effect (preview above is from that original
-          version — same algorithm, GPU-ported here). Subtracts a delayed copy of the frame
-          from the current one — motion lights up white, still areas go dark. The delay is a ring
-          of up to 30 GPU framebuffers instead of the original's CPU frame buffers: pass 1
+          Subtracts a delayed copy of the frame from the current one — motion lights up white,
+          still areas go dark. The delay is a ring of up to 30 GPU framebuffers: pass 1
           unpremultiplies the live input into this frame's ring slot, pass 2 diffs that slot
-          against the delayed one with the same Rec.601-luma + Hardness contrast curve as the
-          original.
+          against the delayed one with a Rec.601-luma + Hardness contrast curve.
         </p>
         <div class="card-params">
           <span class="tag">Frame Delay : 1-30 frames</span>
@@ -325,7 +322,7 @@
     <div class="card" id="p02">
       <div class="card-media">
         <div class="placeholder">
-          <img src="ColorReduce.png" alt="ColorReduce preview (from the FreeFrame 1.0 version — same algorithm, GPU-ported here)">
+          <img src="ColorReduce.png" alt="ColorReduce preview">
         </div>
         <div class="placeholder">
           <video src="ColorReduce.mp4" controls loop muted playsinline></video>
@@ -335,14 +332,12 @@
         <div class="card-number">Effect</div>
         <div class="card-title">ColorReduce</div>
         <p class="card-desc">
-          FFGL port of the FreeFrame 1.0 ColorReduce effect (preview above is from that original
-          version — same algorithm, GPU-ported here): finds the N most dominant colours in
-          the frame (a coarse 6x6x6 histogram) and remaps every pixel to its nearest one. The
-          histogram step is inherently whole-frame, which doesn't fit a single stateless GPU pass —
-          this reads the input texture back to the CPU once per frame and runs the same
-          histogram/top-N algorithm as the original, then a GPU shader does only the final
-          per-pixel remap against the resulting palette. That CPU readback is a real (if usually
-          small) performance cost compared to a pure-GPU effect.
+          Finds the N most dominant colours in the frame (a coarse 6x6x6 histogram) and remaps
+          every pixel to its nearest one. The histogram step is inherently whole-frame, which
+          doesn't fit a single stateless GPU pass — this reads the input texture back to the CPU
+          once per frame and runs the histogram/top-N algorithm there, then a GPU shader does only
+          the final per-pixel remap against the resulting palette. That CPU readback is a real (if
+          usually small) performance cost compared to a pure-GPU effect.
         </p>
         <div class="card-params">
           <span class="tag">Colors : 2-64</span>
@@ -361,11 +356,9 @@
           Loads and hot-swaps ISF/GLSL generator shaders from disk — no build tools needed on the
           Windows side. Drop <code>ISFBrowser.dll</code> and any number of <code>.fs</code> files
           into the same Resolume plugins folder; a native option dropdown lists every shader
-          found. Unlike the FreeFrame version (capped at 4 sliders, needed a custom popup window
-          and a manual slot-assignment UI to work around that), every one of a shader's own ISF
-          <code>INPUTS</code> becomes its own real, named, ranged Resolume parameter automatically —
-          no popup window, no background thread, everything lives in Resolume's own parameter
-          panel.
+          found. Every one of a shader's own ISF <code>INPUTS</code> becomes its own real, named,
+          ranged Resolume parameter automatically — no popup window, no background thread,
+          everything lives in Resolume's own parameter panel.
         </p>
         <div class="card-params">
           <span class="tag">Shader : native dropdown, scans the plugin's own folder</span>
