@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FFGL Effects for Resolume 7.x</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0e;
+      --surface: #181818;
+      --border: #2a2a2a;
+      --accent: #c8ff00;
+      --text: #e0e0e0;
+      --muted: #828282;
+      --radius: 6px;
+      --font: 'Courier New', Courier, monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      max-width: 860px;
+      margin: 0 auto 4rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      margin-bottom: 1rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      max-width: 820px;
+    }
+
+    header p a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    header p a:hover {
+      text-decoration: underline;
+    }
+
+    .effects {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .card-media {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .placeholder {
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-right: 1px solid var(--border);
+    }
+
+    .placeholder:last-child {
+      border-right: none;
+    }
+
+    .placeholder img,
+    .placeholder video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card-number {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-params {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .tag {
+      background: #222;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      color: #aaa;
+      letter-spacing: 0.04em;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 0.55rem 1.2rem;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      margin-right: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .download-btn:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .shader-pack {
+      margin-top: 0.6rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .shader-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.8rem 0 1rem;
+    }
+
+    .shader-list a {
+      background: #222;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .shader-list a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .shader-list a.effect-shader {
+      color: #9fd3ff;
+    }
+
+    footer {
+      max-width: 860px;
+      margin: 5rem auto 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .toc-title {
+      margin-top: 1.5rem;
+      margin-bottom: 0.6rem;
+      color: var(--muted);
+    }
+
+    .toc {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+
+    .toc a {
+      display: inline-block;
+      background: #222;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .toc a:hover {
+      background: #2a2a2a;
+      border-color: var(--accent);
+    }
+
+    @media (max-width: 540px) {
+      .card-media {
+        grid-template-columns: 1fr;
+      }
+      .placeholder {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .placeholder:last-child {
+        border-bottom: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>FFGL Effects for Resolume &gt;2</h1>
+    <p>
+      64-bit FFGL plugins for modern Resolume (7.x), built on top of
+      <a href="https://github.com/resolume/ffgl" target="_blank">Resolume's own FFGL SDK</a>,
+      made with <a href="https://claude.ai" target="_blank">Claude</a>. This is the FFGL sibling
+      of the <a href="https://toastbrotch.github.io/freeframe1plugins/" target="_blank">FreeFrame 1.0 plugins for Resolume 2.41</a> —
+      same spirit, modern (64-bit, GPU-texture-based) plugin API. Cross-compiled to Windows from
+      Linux using MinGW; see the repo's <code>build-windows-mingw.sh</code> scripts and README
+      for the officially-supported Visual Studio / Xcode workflow.
+      <br /><br />
+      <strong>Install:</strong> copy a <code>.dll</code> (and, for ISF Browser / ISF Effect, any
+      <code>.fs</code> shader files you want it to find) into
+      <code>%USERPROFILE%\Documents\Resolume\Extra Effects\</code>, then (re)start Resolume.
+      <br /><br />
+      <strong>Sources vs. effects:</strong> ISF Browser and videopong.net are <em>sources</em> —
+      find them in the sources panel and drop them into a clip slot. FrameDiff, ColorReduce and
+      ISF Effect are <em>effects</em> — drop them onto a clip, layer, or the master effect slot.
+      <br /><br />
+      Source code: <a href="https://github.com/toastbrotch/ffglplugins" target="_blank"><svg aria-hidden="true" focusable="false" class="octicon octicon-mark-github" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M12 1C5.9225 1 1 5.9225 1 12C1 16.8675 4.14875 20.9787 8.52125 22.4362C9.07125 22.5325 9.2775 22.2025 9.2775 21.9137C9.2775 21.6525 9.26375 20.7862 9.26375 19.865C6.5 20.3737 5.785 19.1912 5.565 18.5725C5.44125 18.2562 4.905 17.28 4.4375 17.0187C4.0525 16.8125 3.5025 16.3037 4.42375 16.29C5.29 16.2762 5.90875 17.0875 6.115 17.4175C7.105 19.0812 8.68625 18.6137 9.31875 18.325C9.415 17.61 9.70375 17.1287 10.02 16.8537C7.5725 16.5787 5.015 15.63 5.015 11.4225C5.015 10.2262 5.44125 9.23625 6.1425 8.46625C6.0325 8.19125 5.6475 7.06375 6.2525 5.55125C6.2525 5.55125 7.17375 5.2625 9.2775 6.67875C10.1575 6.43125 11.0925 6.3075 12.0275 6.3075C12.9625 6.3075 13.8975 6.43125 14.7775 6.67875C16.8813 5.24875 17.8025 5.55125 17.8025 5.55125C18.4075 7.06375 18.0225 8.19125 17.9125 8.46625C18.6138 9.23625 19.04 10.2125 19.04 11.4225C19.04 15.6437 16.4688 16.5787 14.0213 16.8537C14.42 17.1975 14.7638 17.8575 14.7638 18.8887C14.7638 20.36 14.75 21.5425 14.75 21.9137C14.75 22.2025 14.9563 22.5462 15.5063 22.4362C19.8513 20.9787 23 16.8537 23 12C23 5.9225 18.0775 1 12 1Z"></path></svg></a>
+    </p>
+    <div class="toc-title">Plugins:</div>
+    <nav class="toc">
+      <a href="#p01">FrameDiff</a>
+      <a href="#p02">ColorReduce</a>
+      <a href="#p03">ISF Browser</a>
+      <a href="#p04">ISF Effect</a>
+      <a href="#p05">videopong.net</a>
+    </nav>
+  </header>
+
+  <div class="effects">
+
+    <!-- FrameDiff -->
+    <div class="card" id="p01">
+      <div class="card-media">
+        <div class="placeholder">
+          <img src="FrameDiff.png" alt="FrameDiff preview (from the FreeFrame 1.0 version — same algorithm, GPU-ported here)">
+        </div>
+        <div class="placeholder">
+          <video src="FrameDiff.mp4" controls loop muted playsinline></video>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Effect</div>
+        <div class="card-title">FrameDiff</div>
+        <p class="card-desc">
+          FFGL port of the FreeFrame 1.0 FrameDiff effect (preview above is from that original
+          version — same algorithm, GPU-ported here). Subtracts a delayed copy of the frame
+          from the current one — motion lights up white, still areas go dark. The delay is a ring
+          of up to 30 GPU framebuffers instead of the original's CPU frame buffers: pass 1
+          unpremultiplies the live input into this frame's ring slot, pass 2 diffs that slot
+          against the delayed one with the same Rec.601-luma + Hardness contrast curve as the
+          original.
+        </p>
+        <div class="card-params">
+          <span class="tag">Frame Delay : 1-30 frames</span>
+          <span class="tag">Hardness : 0-100%</span>
+        </div>
+        <a class="download-btn" href="FrameDiff.dll">Download FrameDiff.dll</a>
+      </div>
+    </div>
+
+    <!-- ColorReduce -->
+    <div class="card" id="p02">
+      <div class="card-media">
+        <div class="placeholder">
+          <img src="ColorReduce.png" alt="ColorReduce preview (from the FreeFrame 1.0 version — same algorithm, GPU-ported here)">
+        </div>
+        <div class="placeholder">
+          <video src="ColorReduce.mp4" controls loop muted playsinline></video>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Effect</div>
+        <div class="card-title">ColorReduce</div>
+        <p class="card-desc">
+          FFGL port of the FreeFrame 1.0 ColorReduce effect (preview above is from that original
+          version — same algorithm, GPU-ported here): finds the N most dominant colours in
+          the frame (a coarse 6x6x6 histogram) and remaps every pixel to its nearest one. The
+          histogram step is inherently whole-frame, which doesn't fit a single stateless GPU pass —
+          this reads the input texture back to the CPU once per frame and runs the same
+          histogram/top-N algorithm as the original, then a GPU shader does only the final
+          per-pixel remap against the resulting palette. That CPU readback is a real (if usually
+          small) performance cost compared to a pure-GPU effect.
+        </p>
+        <div class="card-params">
+          <span class="tag">Colors : 2-64</span>
+          <span class="tag">Pal.Rotate : 0-100%</span>
+        </div>
+        <a class="download-btn" href="ColorReduce.dll">Download ColorReduce.dll</a>
+      </div>
+    </div>
+
+    <!-- ISF Browser -->
+    <div class="card" id="p03">
+      <div class="card-body">
+        <div class="card-number">Source</div>
+        <div class="card-title">ISF Browser</div>
+        <p class="card-desc">
+          Loads and hot-swaps ISF/GLSL generator shaders from disk — no build tools needed on the
+          Windows side. Drop <code>ISFBrowser.dll</code> and any number of <code>.fs</code> files
+          into the same Resolume plugins folder; a native option dropdown lists every shader
+          found. Unlike the FreeFrame version (capped at 4 sliders, needed a custom popup window
+          and a manual slot-assignment UI to work around that), every one of a shader's own ISF
+          <code>INPUTS</code> becomes its own real, named, ranged Resolume parameter automatically —
+          no popup window, no background thread, everything lives in Resolume's own parameter
+          panel.
+        </p>
+        <div class="card-params">
+          <span class="tag">Shader : native dropdown, scans the plugin's own folder</span>
+          <span class="tag">up to 16 dynamic parameters, one per shader INPUT</span>
+        </div>
+        <a class="download-btn" href="ISFBrowser.dll">Download ISFBrowser.dll</a>
+
+        <div class="shader-pack">
+          <p class="card-desc" style="margin-bottom:0;">
+            Generator shaders (compatible with ISF Browser) from this project:
+          </p>
+          <div class="shader-list">
+            <a href="0-id-display.fs">0-id-display.fs</a>
+          </div>
+          <p class="card-desc" style="margin-bottom:0;">
+            Not included here: shaders using ISF's multi-pass <code>PASSES</code>/<code>PASSINDEX</code>/
+            <code>IMG_PIXEL</code> features (e.g. a raymarched "sandwich supernova" scene this
+            project also has lying around) — neither ISF Browser nor ISF Effect implement
+            multi-pass yet, only a single fragment-shader pass per shader.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ISF Effect -->
+    <div class="card" id="p04">
+      <div class="card-body">
+        <div class="card-number">Effect</div>
+        <div class="card-title">ISF Effect</div>
+        <p class="card-desc">
+          Effect sibling of ISF Browser: same scan-a-folder-of-<code>.fs</code>,
+          dynamic-native-parameters design, but applies to a clip/layer instead of generating
+          standalone. A shader's own ISF <code>"TYPE": "image"</code> input (by convention named
+          <code>inputImage</code>) is bound to the plugin's actual incoming video each frame;
+          every other float/bool/long <code>INPUTS</code> entry still becomes its own named,
+          ranged Resolume parameter automatically. Shaders with no image input still load fine —
+          they just ignore the incoming video (a generator used in an effect slot).
+        </p>
+        <div class="card-params">
+          <span class="tag">Shader : native dropdown, scans the plugin's own folder</span>
+          <span class="tag">up to 16 dynamic parameters, one per shader INPUT</span>
+        </div>
+        <a class="download-btn" href="ISFEffect.dll">Download ISFEffect.dll</a>
+
+        <div class="shader-pack">
+          <p class="card-desc" style="margin-bottom:0;">
+            Filter shaders (declare an image input, made for ISF Effect) from this project:
+          </p>
+          <div class="shader-list">
+            <a class="effect-shader" href="vhs-glitch.fs">vhs-glitch.fs</a>
+            <a class="effect-shader" href="vhs-clog.fs">vhs-clog.fs</a>
+          </div>
+          <p class="card-desc" style="margin-bottom:0;">
+            Any of the generator shaders listed under ISF Browser above will also load into ISF
+            Effect (they just won't react to the incoming clip).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VideoPong -->
+    <div class="card" id="p05">
+      <div class="card-body">
+        <div class="card-number">Source</div>
+        <div class="card-title">videopong.net</div>
+        <p class="card-desc">
+          Finds and plays clips from <a href="https://www.videopong.net/" target="_blank">videopong.net</a>
+          directly inside Resolume. "Browse Clips" opens a popup window to search and pick a clip,
+          which then downloads and plays. Statically linked against FFmpeg for decoding, so
+          nothing else needs to ship alongside the plugin. The only one of these plugins whose
+          Linux cross-compile needs the <strong>posix</strong>-threads mingw-w64 variant
+          specifically (its background download/decode threads need working
+          <code>std::thread</code>/<code>std::mutex</code>) — see the plugin's own
+          <code>build-windows-mingw.sh</code> for the full toolchain requirement.
+        </p>
+        <div class="card-params">
+          <span class="tag">Browse Clips : opens the clip-search popup</span>
+          <span class="tag">Open Cache Folder : opens the downloaded-clips folder</span>
+          <span class="tag">Play : on/off</span>
+          <span class="tag">Loop : on/off</span>
+        </div>
+        <a class="download-btn" href="VideoPong.dll">Download VideoPong.dll</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    FFGL 2.x &mdash; built with MinGW x86_64 on Linux &mdash; targets Resolume 7.x on Windows &mdash; made with Claude
+  </footer>
+
+</body>
+</html>

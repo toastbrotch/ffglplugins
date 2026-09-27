@@ -1,0 +1,5 @@
+add_subdirectory(ColorReduce)
+add_subdirectory(FrameDiff)
+add_subdirectory(ISFBrowser)
+add_subdirectory(ISFEffect)
+add_subdirectory(VideoPong)

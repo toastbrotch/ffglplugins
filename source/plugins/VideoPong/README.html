@@ -1,0 +1,133 @@
+<!-- Content fragment only - meant to be pasted into the #content block of a page
+     structured like videopong.net's own pages (e.g. videopong.net/static/vpdudepreview),
+     reusing that site's own classes (.warning, .withborder) so it inherits the site's
+     style.css/retro.css as-is instead of carrying its own styling. -->
+
+<h2>videopong.net</h2>
+<style>
+/* the site's own .warning class only adds a left-icon (as a CSS background-image,
+   pinned to the box's top-left corner) + padding, no box - this gives it a
+   border/background too, reusing colors already used elsewhere on the site (the
+   tab strip, boxed links) so it looks native. It also turns off that background
+   icon: pinned to the top-left, it doesn't line up with (possibly multi-line)
+   text. Each .warning div below instead includes the same icon as a plain
+   inline <img>, so it just flows next to the text like a normal word. */
+.warning {
+	border: 1px solid #bfbfbf;
+	background-color: #efefef;
+	border-radius: 3px;
+	background-image: none;
+	padding: 8px 12px;
+	text-align: left;
+}
+.warning img {
+	vertical-align: middle;
+	margin-right: 6px;
+}
+/* the site's own .withborder class sets border-collapse on td/th, but that
+   property only has effect on the table element itself, so it's a no-op there
+   and cells render with doubled-up borders. Setting it here on the table fixes it. */
+table.withborder {
+	border-collapse: collapse;
+}
+/* the site's own .withborder td/th only set padding: 2px, cramped for
+   multi-line cells like the "what it does" column below - give it more room. */
+table.withborder td,
+table.withborder th {
+	padding: 6px 8px;
+}
+/* the site's CSS has no default constraint on img width, so a big image would
+   overflow the content column - this caps it at the column's own width and
+   keeps it scaled down proportionally instead of just cropping/overflowing. */
+.contentimg {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+/* the site's CSS has no generic ul/ol/li rule, so bullet items just use the
+   browser default of 0 margin - add some breathing room between items. */
+#content ul, #content ol {
+	line-height: 1.6;
+}
+#content ul li, #content ol li {
+	margin-bottom: 6px;
+}
+</style>
+<div class="warning"><img src="/images/icon_warning.gif" alt="" />version 0.0.1, Windows only<br /></div>
+
+<ul>
+	<li><a href="#c01">What is it?</a></li>
+	<li><a href="#c02">Install</a></li>
+	<li><a href="#c03">Operate</a></li>
+</ul>
+<br />
+
+<a id="c01"></a>
+<h3>What is it?</h3>
+<p>videopong.net is a video Source plugin for Resolume Arena/Avenue. It lets you search
+videopong.net for short clips right from within Resolume, pick one from a popup browser
+window, and it plays that clip as a live video source - no manual downloading or importing
+of files required.<br /><br />
+Downloaded clips are cached locally, so picking the same clip again later doesn't
+re-download it.<br /><br /></p>
+
+<div class="warning"><img src="/images/icon_warning.gif" alt="" />this version only downloads the public 640&times;480 preview of each
+clip - the same low-res preview videopong.net shows on its website, not the full-scale
+original. support for full-resolution clips (with login) is possibly coming in a future
+version, but isn't available yet.<br /></div>
+
+<a id="c02"></a>
+<h3>Install</h3>
+<ol>
+	<li>get <b><a href="Videopong.dll">VideoPong.dll</a></b></li>
+	<li>copy <b>VideoPong.dll</b> into your Resolume Extra Effects folder, typically:<br />
+	&nbsp;&nbsp;<tt>%USERPROFILE%\Documents\Resolume\Extra Effects</tt></li>
+	<li>start (or restart) Resolume Arena/Avenue</li>
+	<li>videopong.net will appear as a Source effect named <i>videopong.net</i>, ready to drop
+	onto a layer or clip slot</li>
+</ol>
+
+<div class="warning"><img src="/images/icon_warning.gif" alt="" />videopong.net is currently Windows-only. the clip-search popup window
+and the "Open Cache Folder" button rely on Win32/GDI+ and don't work on macOS.<br /></div>
+
+<a id="c03"></a>
+<h3>Operate</h3>
+<p>drop videopong.net onto a clip or layer like any other source. it exposes four
+controls:<br /><br /></p>
+
+<table class="withborder">
+<tr><th>control</th><th>type</th><th>what it does</th></tr>
+<tr>
+	<td>Browse&nbsp;Clips</td>
+	<td>button</td>
+	<td>opens a popup window to search videopong.net by keyword and pick a clip from the
+	results. the clip downloads to a local cache and starts playing automatically once
+	chosen.</td>
+</tr>
+<tr>
+	<td>Open&nbsp;Cache&nbsp;Folder</td>
+	<td>button</td>
+	<td>opens the folder where downloaded clips are cached, in Explorer.</td>
+</tr>
+<tr>
+	<td>Play</td>
+	<td>on/off</td>
+	<td>pauses or resumes playback of the current clip.</td>
+</tr>
+<tr>
+	<td>Loop</td>
+	<td>on/off</td>
+	<td>when on, the clip restarts automatically after it ends.</td>
+</tr>
+</table>
+<br />
+
+<p><b>typical workflow:</b></p>
+<ol>
+	<li>click "Browse Clips"</li>
+	<li>type a search term and browse the thumbnail grid</li>
+	<li>click a clip to select it - it downloads (if not already cached) and starts playing on
+	the layer</li>
+	<li>use "Play" and "Loop" to control playback as needed</li>
+</ol>
+<p>until a clip has been picked, the source outputs a transparent frame.<br /></p>
