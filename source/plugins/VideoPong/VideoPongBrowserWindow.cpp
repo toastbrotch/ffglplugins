@@ -1020,7 +1020,7 @@ void BrowserWindow::Close()
 
 }//namespace videopong
 
-#else//!defined( _WIN32 )
+#elif !defined( __APPLE__ )//macOS has its own implementation in VideoPongBrowserWindow.mm.
 
 #include <FFGLSDK.h>//For FFGLLog::LogToHost.
 
